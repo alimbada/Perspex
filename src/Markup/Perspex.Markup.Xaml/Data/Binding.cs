@@ -23,6 +23,12 @@ namespace Perspex.Markup.Xaml.Data
         public IValueConverter Converter { get; set; }
 
         /// <summary>
+        /// Gets or sets a that can be used to find the current logical tree when binding
+        /// an <see cref="ElementName"/> binding to a non-control.
+        /// </summary>
+        public IControl TreeContext { get; set; }
+
+        /// <summary>
         /// Gets or sets a parameter to pass to <see cref="Converter"/>.
         /// </summary>
         public object ConverterParameter { get; set; }
@@ -81,8 +87,17 @@ namespace Perspex.Markup.Xaml.Data
 
             if (pathInfo.ElementName != null || ElementName != null)
             {
+                var treeContext = TreeContext ?? (target as IControl);
+
+                if (treeContext == null)
+                {
+                    throw new InvalidOperationException(
+                        "When binding an ElementName to a non-control you must set the " +
+                        "TreeContext property.");
+                }
+
                 observer = CreateElementObserver(
-                    (IControl)target, 
+                    treeContext, 
                     pathInfo.ElementName ?? ElementName, 
                     pathInfo.Path);
             }
