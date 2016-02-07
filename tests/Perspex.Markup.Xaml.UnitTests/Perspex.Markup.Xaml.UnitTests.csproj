@@ -91,6 +91,7 @@
     <Compile Include="Data\BindingTests_TemplatedParent.cs" />
     <Compile Include="Data\BindingTests.cs" />
     <Compile Include="Converters\PerspexPropertyConverterTest.cs" />
+    <Compile Include="NonControl.cs" />
     <Compile Include="Parsers\SelectorGrammarTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SampleModel\Level1.cs" />
@@ -102,6 +103,7 @@
     <Compile Include="SampleModel\Repository.cs" />
     <Compile Include="SampleModel\UserRepositoriesViewModel.cs" />
     <Compile Include="SamplePerspexObject.cs" />
+    <Compile Include="SetterTests.cs" />
     <Compile Include="StyleTests.cs" />
     <Compile Include="Templates\DataTemplateTests.cs" />
     <Compile Include="Templates\TreeDataTemplateTests.cs" />
