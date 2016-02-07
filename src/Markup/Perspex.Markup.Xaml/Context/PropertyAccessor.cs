@@ -7,20 +7,26 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using OmniXaml.ObjectAssembler;
 using OmniXaml.Typing;
+using Perspex.Controls;
 using Perspex.Data;
+using Perspex.Markup.Xaml.Data;
 using Perspex.Styling;
 
 namespace Perspex.Markup.Xaml.Context
 {
     internal static class PropertyAccessor
     {
-        public static void SetValue(object instance, MutableMember member, object value)
+        public static void SetValue(
+            object instance, 
+            MutableMember member, 
+            ValuePipeline pipeline, 
+            object value)
         {
             var perspexProperty = FindPerspexProperty(instance, member);
 
             if (value is IBinding)
             {
-                SetBinding(instance, member, perspexProperty, (IBinding)value);
+                SetBinding(instance, member, pipeline, perspexProperty, (IBinding)value);
             }
             else if (perspexProperty != null)
             {
@@ -31,9 +37,8 @@ namespace Perspex.Markup.Xaml.Context
                 // TODO: Make this more generic somehow.
                 var setter = (Setter)instance;
                 var targetType = setter.Property.PropertyType;
-                var valuePipeline = new ValuePipeline(member.TypeRepository, null);
                 var xamlType = member.TypeRepository.GetByType(targetType);
-                SetClrProperty(instance, member, valuePipeline.ConvertValueIfNecessary(value, xamlType));
+                SetClrProperty(instance, member, pipeline.ConvertValueIfNecessary(value, xamlType));
             }
             else
             {
@@ -78,9 +83,18 @@ namespace Perspex.Markup.Xaml.Context
         private static void SetBinding(
             object instance,
             MutableMember member, 
-            PerspexProperty property, 
+            ValuePipeline pipeline,
+            PerspexProperty property,
             IBinding binding)
         {
+            var control = instance as IControl;
+            var xamlBinding = binding as Binding;
+
+            if (control == null && xamlBinding != null)
+            {
+                xamlBinding.TreeContext = pipeline.TopDownValueContext.GetLastInstance<IControl>();
+            }
+
             if (!(AssignBinding(instance, member, binding) || ApplyBinding(instance, property, binding)))
             {
                 throw new InvalidOperationException(

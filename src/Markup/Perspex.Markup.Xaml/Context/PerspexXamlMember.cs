@@ -5,6 +5,7 @@ using Perspex.Markup.Xaml.Data;
 using OmniXaml;
 using OmniXaml.Typing;
 using System;
+using OmniXaml.ObjectAssembler;
 
 namespace Perspex.Markup.Xaml.Context
 {
@@ -18,9 +19,9 @@ namespace Perspex.Markup.Xaml.Context
         {
         }
 
-        public override void SetValue(object instance, object value)
+        public override void SetValue(object instance, object value, ValuePipeline pipeline)
         {
-            PropertyAccessor.SetValue(instance, this, value);
+            PropertyAccessor.SetValue(instance, this, pipeline, value);
         }
 
         public override string ToString()
